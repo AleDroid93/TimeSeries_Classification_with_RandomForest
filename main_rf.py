@@ -1,7 +1,10 @@
 import numpy as np
+import os
+import constants
 from sklearn.model_selection import GridSearchCV, PredefinedSplit
 from  sklearn.ensemble import RandomForestClassifier
 from sklearn import metrics
+from sklearn.externals import joblib
 
 """
     Training and evaluating Random Forest classification metrics using a shuffled dataset in 5 folds of data
@@ -52,3 +55,9 @@ for i in range(N_FOLDS):
     print("Accuracy: ", metrics.accuracy_score(y_test, y_pred))
     print("F-score: ", metrics.f1_score(y_test, y_pred, average='macro'))
     print("K-score: ", metrics.cohen_kappa_score(y_test, y_pred))
+
+    # best model saving in a single file
+    outputFolder = constants.OUTPUT_DIR_PATH + current_fold
+    if not os.path.exists(outputFolder):
+        os.makedirs(outputFolder)
+    joblib.dump(grid_search.best_estimator_, outputFolder+'/best_model.pkl', compress=1)
